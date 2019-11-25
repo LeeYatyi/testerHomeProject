@@ -7,8 +7,11 @@ def is_prime(number):
             return False
     return True
 
-def add(a,b):
+
+def add(a, b):
     return a + b
 
-def divide(a,b):
+
+def divide(a, b):
     return a/b
+
