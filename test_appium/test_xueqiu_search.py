@@ -5,7 +5,7 @@ from time import sleep
 
 import pytest
 from appium import webdriver
-
+from hamcrest import *
 
 class TestXueqiu:
     def setup_class(self):
@@ -31,20 +31,6 @@ class TestXueqiu:
         sleep(5)
         self.driver.quit()
 
-    def test_profile(self):
-        self.driver.find_element_by_id("user_profile_icon").click()
-        # el1 = self.driver.find_element_by_id("com.xueqiu.android:id/tv_open")
-        # el1.click()
-        # el2 = self.driver.find_element_by_id("com.android.packageinstaller:id/permission_allow_button")
-        # el2.click()
-        # el3 = self.driver.find_element_by_id("com.android.packageinstaller:id/permission_allow_button")
-        # el3.click()
-        # el4 = self.driver.find_element_by_xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.LinearLayout/android.widget.FrameLayout[1]/android.widget.FrameLayout/android.widget.ImageView")
-        # el4.click()
-
-    def test_swipe(self):
-        self.driver.swipe(500, 900, 100, 200, 1000)
-
     @pytest.mark.parametrize("keyword, stock_type, expect_price", [("alibaba", 'BABA', 170), ('xiaomi', '01810', 8.5)])
     def test_search(self, keyword, stock_type, expect_price):
         self.driver.find_element_by_id("home_search").click()
@@ -54,4 +40,5 @@ class TestXueqiu:
             "//*[contains(@resource-id, 'stockCode') and @text='" + stock_type + "']/../../.."
             "//*[contains(@resource-id, 'current_price')]").text)
         print(price)
-        assert price > expect_price
+        # assert price > expect_price
+        assert_that(price,close_to(expect_price,expect_price*0.8))
