@@ -41,4 +41,4 @@ class TestXueqiu:
             "//*[contains(@resource-id, 'current_price')]").text)
         print(price)
         # assert price > expect_price
-        assert_that(price,close_to(expect_price,expect_price*0.8))
+        assert_that(price, close_to(expect_price, expect_price*0.8))
