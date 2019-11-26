@@ -1,2 +1,0 @@
-is_prime
-所有用例执行前会调用一次tearDown方法清理环境
