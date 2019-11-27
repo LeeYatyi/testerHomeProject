@@ -21,18 +21,22 @@ class TestXueqiu:
         self.driver.find_element_by_id("image_cancel").click()
         self.driver.find_element_by_id("user_profile_icon")
 
-    def setup(self):
-        pass
-
-    def teardown(self):
-        self.driver.find_element_by_id("action_close").click()
+    # def setup(self):
+    #     pass
 
     def teardown_class(self):
         sleep(5)
         self.driver.quit()
 
-    @pytest.mark.parametrize("keyword, stock_type, expect_price", [("alibaba", 'BABA', 170), ('xiaomi', '01810', 8.5)])
-    def test_search(self, keyword, stock_type, expect_price):
+    @pytest.fixture()
+    def search_fixture(self):
+        print("setup search_fixture")
+        sleep(2)
+        yield
+        self.driver.find_element_by_id("action_close").click()
+
+    @pytest.mark.parametrize("keyword, stock_type, expect_price", [("alibaba", 'BABA', 180), ('xiaomi', '01810', 8.5)])
+    def test_search(self, search_fixture, keyword, stock_type, expect_price):
         self.driver.find_element_by_id("home_search").click()
         self.driver.find_element_by_id("search_input_text").send_keys(keyword)
         self.driver.find_element_by_id("name").click()
