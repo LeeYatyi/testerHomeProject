@@ -35,7 +35,7 @@ class TestXueqiu:
         yield
         self.driver.find_element_by_id("action_close").click()
 
-    @pytest.mark.parametrize("keyword, stock_type, expect_price", [("alibaba", 'BABA', 180), ('xiaomi', '01810', 8.5)])
+    @pytest.mark.parametrize("keyword, stock_type, expect_price", [("alibaba", 'BABA', 200), ('xiaomi', '01810', 8.5)])
     def test_search(self, search_fixture, keyword, stock_type, expect_price):
         self.driver.find_element_by_id("home_search").click()
         self.driver.find_element_by_id("search_input_text").send_keys(keyword)
