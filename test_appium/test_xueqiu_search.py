@@ -17,7 +17,7 @@ class TestXueqiu:
         caps['autoGrantPermissions'] = True
 
         self.driver = webdriver.Remote("http://localhost:4723/wd/hub", caps)
-        self.driver.implicitly_wait(15)
+        self.driver.implicitly_wait(60)
         self.driver.find_element_by_id("image_cancel").click()
         self.driver.find_element_by_id("user_profile_icon")
 

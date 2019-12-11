@@ -5,6 +5,8 @@ from time import sleep
 
 import pytest
 from appium import webdriver
+from appium.webdriver.common.mobileby import MobileBy
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class TestXueqiu:
@@ -15,17 +17,18 @@ class TestXueqiu:
         caps["appPackage"] = "com.xueqiu.android"
         caps["appActivity"] = ".view.WelcomeActivityAlias"
         caps['autoGrantPermissions'] = True
+        # caps['aotumationName'] = 'UiAutomator'
 
         self.driver = webdriver.Remote("http://localhost:4723/wd/hub", caps)
-        self.driver.implicitly_wait(15)
-        self.driver.find_element_by_id("image_cancel").click()
+        self.driver.implicitly_wait(20)
+        # self.driver.find_element_by_id("image_cancel").click()
         self.driver.find_element_by_id("user_profile_icon")
 
     def setup(self):
         pass
-
-    def teardown(self):
-        self.driver.find_element_by_id("action_close").click()
+    #
+    # def teardown(self):
+    #     self.driver.find_element_by_id("action_close").click()
 
     def teardown_class(self):
         sleep(5)
@@ -45,6 +48,13 @@ class TestXueqiu:
     def test_swipe(self):
         self.driver.swipe(500, 900, 100, 200, 1000)
 
+    @pytest.fixture()
+    def search_fixture(self):
+        print("setup search_fixture")
+        sleep(2)
+        yield
+        self.driver.find_element_by_id("action_close").click()
+
     @pytest.mark.parametrize("keyword, stock_type, expect_price", [("alibaba", 'BABA', 170), ('xiaomi', '01810', 8.5)])
     def test_search(self, keyword, stock_type, expect_price):
         self.driver.find_element_by_id("home_search").click()
@@ -55,3 +65,59 @@ class TestXueqiu:
             "//*[contains(@resource-id, 'current_price')]").text)
         print(price)
         assert price > expect_price
+
+    def test_webview(self):
+        self.driver.find_element(MobileBy.XPATH, '//*[@text="交易"]').click()
+        for i in range(30):
+            sleep(2)
+            print(self.driver.context)
+        # print(self.driver.page_source)
+        # sleep(10)
+        # #
+        # # WebDriverWait(self.driver, 10,1).until(lambda x: "WEBVIEW_com.xueqiu.android" in self.driver.contexts)
+        # #
+        # print("====webview load===")
+        # print(self.driver.page_source)
+        # #
+        # sleep(10)
+        # # # self.driver.switch_to.context("WEBVIEW_com.xueqiu.android")
+        # print("====webview enter===")
+        # print(self.driver.page_source)
+
+    def test_screenshot(self):
+        self.driver.start_recording_screen()
+        self.driver.save_screenshot("home.png")
+        trade = self.driver.find_element(MobileBy.XPATH, '//*[@text="交易"]')
+        trade.screenshot("trade.png")
+        trade.click()
+        # self.driver.orientation
+        sleep(10)
+        self.driver.stop_recording_screen()
+
+    def test_log(self):
+        print(self.driver.log_types)
+        print(self.driver.get_log("logcat"))
+
+    def test_netwok(self):
+        """
+        - adb shell
+        - ls /sdcard/snowball/image_cache/
+        - exit
+        - adb pull /sdcard/snowball/image_cache/16eabd0a6da17f2d3fe915e1.mp4 /tmp/1.mp4
+        # 备注：在cmd窗口下可运行，在gitbash下报错
+        :return:
+        """
+        self.driver.send_sms("18911773181", "hello world")
+        sleep(3)
+        self.driver.make_gsm_call("18911773181", "call")
+        sleep(5)
+
+    def test_perf(self):
+        print(self.driver.get_performance_data_types())
+        perf_data = self.driver.get_performance_data_types()
+        sleep(10)
+        # adb shell dumpsys cpuinfo \| grep "com.xueqiu.android"
+        for p in perf_data:
+            print("%s + info :" % p)
+            print(self.driver.get_performance_data("com.xueqiu.android", p))
+
