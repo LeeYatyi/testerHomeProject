@@ -1,14 +1,19 @@
 import requests
 
-
 class WeWork:
-    corpid = "wwd6da61649bd66fea"
-    AgentId = "1000010"
-    agent_secret = "pAF_eP3FlN3d6 - GxGFESaEwL1G5or1UQmHjkc9rtTj8"
-    contact_secret = "C7uGOrNyxWWzwBsUyWEbLdbZBDrc71PNOhyQ_YYPhts"
+    corpid = "wwc1c217a5b5458dd3"
+    Agent_id = "1000002"
+    agent_secret = "xfvnE_wTjDSK_sLG-M3HfHjiSo38RWScmZP--6k-T4A"
+    contact_secret = "4W9nHhcRSGyIAJIDClsaAYZ0hIvHtshNxpyuhIT1cOg"
     access_token = None
 
-    def get_token(self):
-        url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken"
-        r = requests.get(url,params={"corpid": self.corpid, "contact_secret": self.contact_secret}).json()
-        access_token = r["access_token"]
+
+    @classmethod
+    def get_token(cls):
+        if cls.access_token == None:
+            url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken"
+            resp = requests.get(url, params={"corpid": cls.corpid, "corpsecret": cls.contact_secret}).json()
+            cls.access_token = resp["access_token"]
+            # print(resp)
+
+        return cls.access_token
